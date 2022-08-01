@@ -13,6 +13,7 @@ struct Transition{
 	/* 0xD7 */ u8 TransSpeed;
 };
 struct TEState{
+	/*  NEW */ struct Object *trigger_obj;
 	/* N//A */ u8 state;
 	/* 0x60 */ u8 ShakeScreen;
 	/* 0x61 */ u8 PlainText;

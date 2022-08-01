@@ -1251,7 +1251,7 @@ void mode_8_directions_camera(struct Camera *c) {
 		}
 	}
 	else if (gPlayer1Controller->buttonPressed & U_JPAD) {
-		s8DirModeYawOffset = -gMarioState->faceAngle[1];
+		s8DirModeYawOffset = gMarioState->faceAngle[1]-0x8000;
 	}
 	else if (gPlayer1Controller->buttonPressed & D_JPAD) {
 		s8DirModeYawOffset = (s8DirModeYawOffset+0x1000)&0xE000;
@@ -2930,8 +2930,6 @@ void set_camera_mode(struct Camera *c, s16 mode, s16 frames) {
     if (mode != CAMERA_MODE_NEWCAM && gLakituState.mode != CAMERA_MODE_NEWCAM)
     {
 #endif
-    if (mode == CAMERA_MODE_WATER_SURFACE && gCurrLevelArea == AREA_TTM_OUTSIDE) {
-    } else {
         // Clear movement flags that would affect the transition
         gCameraMovementFlags &= (u16)~(CAM_MOVE_RESTRICT | CAM_MOVE_ROTATE);
         gCameraMovementFlags |= CAM_MOVING_INTO_MODE;
@@ -2972,7 +2970,6 @@ void set_camera_mode(struct Camera *c, s16 mode, s16 frames) {
 
         vec3f_get_dist_and_angle(start->focus, start->pos, &start->dist, &start->pitch, &start->yaw);
         vec3f_get_dist_and_angle(end->focus, end->pos, &end->dist, &end->pitch, &end->yaw);
-    }
 #ifdef BETTERCAMERA
     }
 #endif

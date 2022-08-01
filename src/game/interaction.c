@@ -1732,6 +1732,7 @@ u32 check_read_sign_TE(struct MarioState *m, struct Object *o) {
 				m->marioObj->oMarioReadingSignDPosX = targetX - m->pos[0];
 				m->marioObj->oMarioReadingSignDPosZ = targetZ - m->pos[2];
 				SetupTextEngine(32,60,TE_Strings[o->oBehParams&0xFF],TE_STATE_MAIN);
+				TE_Engines[TE_STATE_MAIN].trigger_obj = o;
 
 				m->interactObj = o;
 				m->usedObj = o;
@@ -1755,6 +1756,7 @@ u32 check_npc_talk_TE(struct MarioState *m, struct Object *o) {
 				m->interactObj = o;
 				m->usedObj = o;
 				SetupTextEngine(32, 60, TE_Strings[o->oBehParams&0xFF], TE_STATE_MAIN);
+				TE_Engines[TE_STATE_MAIN].trigger_obj = o;
 
 				push_mario_out_of_object(m, o, -10.0f);
 				return set_mario_action(m, ACT_WAITING_FOR_DIALOG, 0);

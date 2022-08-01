@@ -764,6 +764,7 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
 				if (m->numLives == 0 && !INFINITE_LIVES) {
                     sDelayedWarpOp = WARP_OP_GAME_OVER;
                 }
+				val04 = !music_changed_through_warp(sSourceWarpNodeId);
                 sDelayedWarpTimer = 48;
                 sSourceWarpNodeId = WARP_NODE_DEATH;
                 play_transition(WARP_TRANSITION_FADE_INTO_BOWSER, 0x30, 0x00, 0x00, 0x00);
@@ -779,6 +780,7 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                         sSourceWarpNodeId = WARP_NODE_DEATH;
                     }
                 }
+				val04 = !music_changed_through_warp(sSourceWarpNodeId);
                 sDelayedWarpTimer = 20;
                 play_transition(WARP_TRANSITION_FADE_INTO_CIRCLE, 0x14, 0x00, 0x00, 0x00);
                 break;
@@ -1077,7 +1079,7 @@ s32 play_mode_paused(void) {
         if (gDebugLevelSelect) {
             fade_into_special_warp(-9, 1);
         } else {
-			#ifdef exit_course_death
+			#if !exit_course_death
             initiate_warp(EXIT_COURSE,0);
 			#else
 			struct ObjectWarpNode *warpNode = area_get_warp_node(WARP_NODE_DEATH);
@@ -1092,7 +1094,7 @@ s32 play_mode_paused(void) {
 #ifndef TARGET_N64
     else if (gPauseScreenMode == 3) {
         // We should only be getting "int 3" to here
-		#ifdef exit_course_death
+		#if !exit_course_death
 		initiate_warp(EXIT_COURSE,0);
 		#else
 		struct ObjectWarpNode *warpNode = area_get_warp_node(WARP_NODE_DEATH);
@@ -1273,6 +1275,7 @@ s32 init_level(void) {
     } else {
         if (gPlayerSpawnInfos[0].areaIndex >= 0) {
 			load_mario_area();
+			#if Always_Start_0xA
 			struct ObjectWarpNode *spawnNode = area_get_warp_node(sWarpDest.nodeId);
 			gPlayerSpawnInfos[0].startPos[0] = (s16) spawnNode->object->oPosX;
 			gPlayerSpawnInfos[0].startPos[1] = (s16) spawnNode->object->oPosY;
@@ -1281,6 +1284,7 @@ s32 init_level(void) {
 			gPlayerSpawnInfos[0].startAngle[0] = 0;
 			gPlayerSpawnInfos[0].startAngle[1] = spawnNode->object->oMoveAngleYaw;
 			gPlayerSpawnInfos[0].startAngle[2] = 0;
+			#endif
 			init_mario();
         }
 

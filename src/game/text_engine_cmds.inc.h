@@ -671,6 +671,9 @@ s8 TE_reset_str(struct TEState *CurEng){
 	if(CurEng->LowerVolume){
 		raise_background_noise(2);
 	}
+	if(CurEng->trigger_obj){
+		CurEng->trigger_obj->oIntangibleTimer = 90;
+	}
 	TE_flush_buffers(CurEng);
 	return -2;
 }

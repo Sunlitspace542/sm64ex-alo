@@ -32,12 +32,6 @@ static s32 find_wall_collisions_from_list(struct SurfaceNode *surfaceNode,
     register f32 w1, w2, w3;
     register f32 y1, y2, y3;
     s32 numCols = 0;
-	
-
-    // Max collision radius = 600
-    if (radius > 600.0f) {
-        radius = 600.0f;
-    }
 
     // Stay in this loop until out of walls.
     while (surfaceNode != NULL) {
