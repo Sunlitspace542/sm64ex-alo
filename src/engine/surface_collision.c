@@ -15,7 +15,7 @@ u8 gCheckingIntangSurfaces = 0;
 /**************************************************
  *                      WALLS                     *
  **************************************************/
-
+u32 gCheckingWaterCollisions = 0;
 /**
  * Iterate through the list of walls until all walls are checked and
  * have given their wall push.
@@ -55,9 +55,13 @@ static s32 find_wall_collisions_from_list(struct SurfaceNode *surfaceNode,
             if (!(surf->flags & SURFACE_INTANG)) {
                 continue;
             }
+		} else if (gCheckingWaterCollisions){
+            if (!(surf->flags & SURFACE_WATER)) {
+                continue;
+            }
 		}else{
-            // Ignore intang
-            if (surf->flags & SURFACE_INTANG) {
+            // Ignore intang | water
+            if (surf->flags & (SURFACE_INTANG | SURFACE_WATER)) {
 				continue;
 			}
 			//ignore cam
@@ -267,9 +271,13 @@ static struct Surface *find_ceil_from_list(struct SurfaceNode *surfaceNode, s32 
             if (!(surf->flags & SURFACE_INTANG)) {
                 continue;
             }
+		} else if (gCheckingWaterCollisions){
+            if (!(surf->flags & SURFACE_WATER)) {
+                continue;
+            }
 		}else{
-            // Ignore intang
-            if (surf->flags & SURFACE_INTANG) {
+            // Ignore intang | water
+            if (surf->flags & (SURFACE_INTANG | SURFACE_WATER)) {
 				continue;
 			}
 			//ignore cam
@@ -457,13 +465,17 @@ static struct Surface *find_floor_from_list(struct SurfaceNode *surfaceNode, s32
             if (surf->flags & SURFACE_FLAG_NO_CAM_COLLISION) {
                 continue;
             }
-        } else if (gCheckingIntangSurfaces){
+        } else if (gCheckingWaterCollisions){
+            if (!(surf->flags & SURFACE_WATER)) {
+                continue;
+            }
+		} else if (gCheckingIntangSurfaces){
             if (!(surf->flags & SURFACE_INTANG)) {
                 continue;
             }
 		}else{
-            // Ignore intang
-            if (surf->flags & SURFACE_INTANG) {
+            // Ignore intang | water
+            if (surf->flags & (SURFACE_INTANG | SURFACE_WATER)) {
 				continue;
 			}
 			//ignore cam
@@ -708,7 +720,33 @@ f32 find_floor(f32 xPos, f32 yPos, f32 zPos, struct Surface **pfloor) {
 /**
  * Finds the height of water at a given location.
  */
-f32 find_water_level(f32 x, f32 z) {
+
+static f32 find_water_surf_level(f32 x, f32 z, f32 y) {
+    f32 waterLevel = FLOOR_LOWER_LIMIT;
+	struct Surface *floor = NULL;
+	struct Surface *ceil = NULL;
+	gCheckingWaterCollisions = 1;
+	f32 fHeight;
+	f32 cHeight;
+	cHeight = find_ceil(x,y,z,&ceil);
+	if (ceil==NULL){
+		gCheckingWaterCollisions = 0;
+		return waterLevel;
+	}
+	fHeight = find_floor(x,cHeight,z,&floor);
+	if (floor==NULL){
+		gCheckingWaterCollisions = 0;
+		return waterLevel;
+	}
+	if ((y+140.0)>fHeight & y<=cHeight){
+		waterLevel = cHeight;
+		gMarioState->waterfloor = floor;
+	}
+	gCheckingWaterCollisions = 0;
+	return waterLevel;
+}
+
+f32 find_water_level(f32 x, f32 y, f32 z) {
     s32 i;
     s32 numRegions;
     s16 val;
@@ -738,11 +776,22 @@ f32 find_water_level(f32 x, f32 z) {
             p++;
         }
     }
+
+	f32 surf_water_lvl = find_water_surf_level(x, y, z);
+	
 #if PUPPYPRINT_DEBUG
     collisionTime[perfIteration] += osGetTime() - first;
 #endif
-    return waterLevel;
+
+	if(surf_water_lvl > waterLevel){
+		return surf_water_lvl;
+	}else{
+		return waterLevel;
+	}
+
 }
+
+
 
 /**
  * Finds the height of the poison gas (used only in HMC) at a given location.
