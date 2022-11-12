@@ -46,6 +46,7 @@ s8 gEepromProbe;
 
 s8 gGamecubeControllerPort = -1; // This is set to -1 if there's no GC controller, 0 if there's one in the first port and 1 if there's one in the second port.
 s8 gIsConsole = 0;
+u8 gCacheEmulated = TRUE;
 
 OSMesgQueue gGameVblankQueue;
 OSMesgQueue D_80339CB8;
@@ -306,12 +307,28 @@ void draw_reset_bars(void) {
     osRecvMesg(&gGameVblankQueue, &D_80339BEC, OS_MESG_BLOCK);
 }
 
+void check_cache_emulation() {
+    // Disable interrupts to ensure that nothing evicts the variable from cache while we're using it.
+    u32 saved = __osDisableInt();
+    // Create a variable with an initial value of 1. This value will remain cached.
+    volatile u8 sCachedValue = 1;
+    // Overwrite the variable directly in RDRAM without going through cache.
+    // This should preserve its value of 1 in dcache if dcache is emulated correctly.
+    *(u8*)(K0_TO_K1(&sCachedValue)) = 0;
+    // Read the variable back from dcache, if it's still 1 then cache is emulated correctly.
+    // If it's zero, then dcache is not emulated correctly.
+    gCacheEmulated = sCachedValue;
+    // Restore interrupts
+    __osRestoreInt(saved);
+}
+
 #ifdef TARGET_N64
 void rendering_init(void) {
     if (IO_READ(DPC_PIPEBUSY_REG) == 1) {
         gIsConsole = TRUE;
     } else {
         gIsConsole = FALSE;
+		check_cache_emulation();
     }
 	gGfxPool = &gGfxPools[0];
     set_segment_base_addr(1, gGfxPool->buffer);
@@ -325,7 +342,7 @@ void rendering_init(void) {
     end_master_display_list();
     send_display_list(&gGfxPool->spTask);
     // Skip incrementing the initial framebuffer index on emulators so that they display immediately as the Gfx task finishes
-    if (gIsConsole) { // Read RDP Clock Register, has a value of zero on emulators
+    if (gIsConsole || gCacheEmulated) {
         frameBufferIndex++;
     }
     gGlobalTimer++;
@@ -373,7 +390,7 @@ void display_and_vsync(void) {
     osRecvMesg(&gGameVblankQueue, &D_80339BEC, OS_MESG_BLOCK);
 	#ifdef TARGET_N64
     // Skip swapping buffers on emulator so that they display immediately as the Gfx task finishes
-    if (gIsConsole) { // Read RDP Clock Register, has a value of zero on emulators
+    if (gIsConsole || gCacheEmulated) { // Read RDP Clock Register, has a value of zero on emulators
         if (++sCurrFBNum == 3) {
             sCurrFBNum = 0;
         }
