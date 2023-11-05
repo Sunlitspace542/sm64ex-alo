@@ -20,6 +20,7 @@
 #include "segment2.h"
 #include "segment_symbols.h"
 #include "rumble_init.h"
+#include "config.h"
 #include <prevent_bss_reordering.h>
 #ifdef BETTERCAMERA
 #include "bettercamera.h"
@@ -98,7 +99,11 @@ void my_rdp_init(void) {
     gDPSetCombineKey(gDisplayListHead++, G_CK_NONE);
     gDPSetAlphaCompare(gDisplayListHead++, G_AC_NONE);
     gDPSetRenderMode(gDisplayListHead++, G_RM_OPA_SURF, G_RM_OPA_SURF2);
+    #ifdef DISABLE_DITHER
+    gDPSetColorDither(gDisplayListHead++, G_CD_DISABLE);
+    #else
     gDPSetColorDither(gDisplayListHead++, G_CD_MAGICSQ);
+    #endif
     gDPSetCycleType(gDisplayListHead++, G_CYC_FILL);
 
 #ifdef VERSION_SH
