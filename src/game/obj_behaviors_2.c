@@ -8,6 +8,9 @@
 #include "behavior_actions.h"
 #include "behavior_data.h"
 #include "camera.h"
+#ifdef BETTERCAMERA
+#include "bettercamera.h"
+#endif
 #include "dialog_ids.h"
 #include "engine/behavior_script.h"
 #include "engine/math_util.h"
