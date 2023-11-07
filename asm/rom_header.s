@@ -44,4 +44,4 @@
     .ascii "E"                  /* NTSC-U (North America) */
 .endif
 
-    .byte 0x10                  /* Savetype - 0x10 = EEP4K */
+.byte 0x10                  /* Savetype - 0x10 = EEP4K */

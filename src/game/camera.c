@@ -9432,7 +9432,7 @@ BAD_RETURN(s32) cutscene_cap_switch_press_pan_left(struct Camera *c) {
  * Create a dialog box with the cap switch's text.
  */
 BAD_RETURN(s32) cutscene_cap_switch_press_create_dialog(UNUSED struct Camera *c) {
-    create_dialog_box_with_response(gCutsceneFocus->oBehParams & 0xFF);
+    create_dialog_box_with_response(gCutsceneFocus->oBehParams2ndByte + DIALOG_010);
 }
 
 static UNUSED BAD_RETURN(s32) unused_cap_switch_retrieve_info(struct Camera *c) {
