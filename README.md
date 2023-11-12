@@ -37,7 +37,7 @@ When using the data from RM2C, make sure to set RM2C to 1 in the makefile.
 
 ### Recommended BUILD cmds
 
- 1. WINDOWS_BUILD
+ 1. WINDOWS BUILD (currently broken)
 	* make clean && make RM2CPC
  2. N64 BUILD
 	* make -j4 RM2C=1
