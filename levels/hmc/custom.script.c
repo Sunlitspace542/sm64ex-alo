@@ -1,0 +1,150 @@
+#include <ultra64.h>
+#include "sm64.h"
+#include "behavior_data.h"
+#include "model_ids.h"
+#include "seq_ids.h"
+#include "dialog_ids.h"
+#include "segment_symbols.h"
+#include "level_commands.h"
+#include "game/level_update.h"
+#include "levels/scripts.h"
+#include "actors/common1.h"
+#include "make_const_nonconst.h"
+
+#include "areas/1/custom.model.inc.h"
+#include "levels/hmc/header.h"
+extern u8 _hmc_segment_ESegmentRomStart[]; 
+extern u8 _hmc_segment_ESegmentRomEnd[];
+#include "levels/bbh/header.h"
+const LevelScript level_hmc_custom_entry[] = {
+INIT_LEVEL(),
+LOAD_MIO0(0x07, _bbh_segment_7SegmentRomStart, _bbh_segment_7SegmentRomEnd),
+LOAD_RAW(0x1A, _bbhSegmentRomStart, _bbhSegmentRomEnd),
+LOAD_RAW(0x0E, _hmc_segment_ESegmentRomStart, _hmc_segment_ESegmentRomEnd),
+LOAD_MIO0(        /*seg*/ 0x0B, _effect_mio0SegmentRomStart, _effect_mio0SegmentRomEnd),
+LOAD_MIO0(0xA,_cloud_floor_skybox_mio0SegmentRomStart,_cloud_floor_skybox_mio0SegmentRomEnd),
+LOAD_MIO0(8,_common0_mio0SegmentRomStart,_common0_mio0SegmentRomEnd),
+LOAD_RAW(15,_common0_geoSegmentRomStart,_common0_geoSegmentRomEnd),
+LOAD_MIO0(5,_group1_mio0SegmentRomStart,_group1_mio0SegmentRomEnd),
+LOAD_RAW(12,_group1_geoSegmentRomStart,_group1_geoSegmentRomEnd),
+LOAD_MIO0(6,_group14_mio0SegmentRomStart,_group14_mio0SegmentRomEnd),
+LOAD_RAW(13,_group14_geoSegmentRomStart,_group14_geoSegmentRomEnd),
+ALLOC_LEVEL_POOL(),
+MARIO(/*model*/ MODEL_MARIO, /*behParam*/ 0x00000001, /*beh*/ bhvMario),
+LOAD_MODEL_FROM_GEO(MODEL_BBH_HAUNTED_DOOR,           haunted_door_geo),
+LOAD_MODEL_FROM_GEO(MODEL_BBH_STAIRCASE_STEP,         geo_bbh_0005B0),
+LOAD_MODEL_FROM_GEO(MODEL_BBH_TILTING_FLOOR_PLATFORM, geo_bbh_0005C8),
+LOAD_MODEL_FROM_GEO(MODEL_BBH_TUMBLING_PLATFORM,      geo_bbh_0005E0),
+LOAD_MODEL_FROM_GEO(MODEL_BBH_TUMBLING_PLATFORM_PART, geo_bbh_0005F8),
+LOAD_MODEL_FROM_GEO(MODEL_BBH_MOVING_BOOKSHELF,       geo_bbh_000610),
+LOAD_MODEL_FROM_GEO(MODEL_BBH_MESH_ELEVATOR,          geo_bbh_000628),
+LOAD_MODEL_FROM_GEO(MODEL_BBH_MERRY_GO_ROUND,         geo_bbh_000640),
+LOAD_MODEL_FROM_GEO(MODEL_BBH_WOODEN_TOMB,            geo_bbh_000658),
+LOAD_MODEL_FROM_GEO(22, warp_pipe_geo),
+LOAD_MODEL_FROM_GEO(23, bubbly_tree_geo),
+LOAD_MODEL_FROM_GEO(24, spiky_tree_geo),
+LOAD_MODEL_FROM_GEO(25, snow_tree_geo),
+LOAD_MODEL_FROM_GEO(29, haunted_door_geo),
+LOAD_MODEL_FROM_GEO(31, metal_door_geo),
+LOAD_MODEL_FROM_GEO(32, hazy_maze_door_geo),
+LOAD_MODEL_FROM_GEO(34, castle_door_0_star_geo),
+LOAD_MODEL_FROM_GEO(35, castle_door_1_star_geo),
+LOAD_MODEL_FROM_GEO(36, castle_door_3_stars_geo),
+LOAD_MODEL_FROM_GEO(37, key_door_geo),
+LOAD_MODEL_FROM_GEO(38, castle_door_geo),
+// LOAD_MODEL_FROM_DL(132,0x08025f08,4),
+// LOAD_MODEL_FROM_DL(158,0x0302c8a0,4),
+// LOAD_MODEL_FROM_DL(159,0x0302bcd0,4),
+// LOAD_MODEL_FROM_DL(161,0x0301cb00,4),
+// LOAD_MODEL_FROM_DL(164,0x04032a18,4),
+// LOAD_MODEL_FROM_DL(201,0x080048e0,4),
+// LOAD_MODEL_FROM_DL(218,0x08024bb8,4),
+JUMP_LINK(script_func_global_1),
+JUMP_LINK(script_func_global_2),
+JUMP_LINK(script_func_global_15),
+JUMP_LINK(local_area_hmc_1_),
+FREE_LEVEL_POOL(),
+MARIO_POS(1,135,-6558,0,6464),
+CALL(/*arg*/ 0, /*func*/ lvl_init_or_update),
+CALL_LOOP(/*arg*/ 1, /*func*/ lvl_init_or_update),
+CLEAR_LEVEL(),
+SLEEP_BEFORE_EXIT(/*frames*/ 1),
+EXIT(),
+};
+const LevelScript local_area_hmc_1_[] = {
+AREA(1,Geo_hmc_1_0x14a1700),
+TERRAIN(col_hmc_1_0xe027370),
+SET_BACKGROUND_MUSIC(0,3),
+TERRAIN_TYPE(0),
+JUMP_LINK(local_objects_hmc_1_),
+JUMP_LINK(local_warps_hmc_1_),
+END_AREA(),
+RETURN()
+};
+const LevelScript local_objects_hmc_1_[] = {
+OBJECT_WITH_ACTS(0,4406,-585,3949,0,280,0,0xa0000, bhvSpinAirborneWarp,31),
+OBJECT_WITH_ACTS(122,-2864,3615,-818,0,0,0,0x0, bhvStar,31),
+OBJECT_WITH_ACTS(122,-6571,74,1419,0,0,0,0x1000000, bhvStar,31),
+OBJECT_WITH_ACTS(122,1691,2569,1823,0,0,0,0x2000000, bhvStar,31),
+OBJECT_WITH_ACTS(122,-1529,533,-2816,0,0,0,0x4000000, bhvStar,31),
+OBJECT_WITH_ACTS(0,714,1134,4450,0,0,0,0x3000000, bhvHiddenRedCoinStar,31),
+OBJECT_WITH_ACTS(122,285,-1235,4753,0,0,0,0x5000000, bhvStar,31),
+OBJECT_WITH_ACTS(217,3614,-871,1417,0,0,0,0x0, bhvPushableMetalBox,31),
+OBJECT_WITH_ACTS(217,2986,-60,-5523,0,0,0,0x0, bhvPushableMetalBox,31),
+OBJECT_WITH_ACTS(217,951,1836,-4365,0,0,0,0x0, bhvPushableMetalBox,31),
+OBJECT_WITH_ACTS(217,1484,2052,-4885,0,0,0,0x0, bhvPushableMetalBox,31),
+OBJECT_WITH_ACTS(217,2486,1536,-3214,0,0,0,0x0, bhvPushableMetalBox,31),
+OBJECT_WITH_ACTS(129,165,-94,-4652,0,136,0,0x0, bhvHiddenObject,31),
+OBJECT_WITH_ACTS(129,-347,-94,-3825,0,0,0,0x0, bhvHiddenObject,31),
+OBJECT_WITH_ACTS(129,-696,-94,-3017,0,39,0,0x0, bhvHiddenObject,31),
+OBJECT_WITH_ACTS(129,-1529,-94,-2816,0,0,0,0x0, bhvHiddenObject,31),
+OBJECT_WITH_ACTS(223,-189,2731,-4455,0,0,0,0x0, bhvChuckya,31),
+OBJECT_WITH_ACTS(223,2542,68,-5521,0,0,0,0x0, bhvChuckya,31),
+OBJECT_WITH_ACTS(223,2601,2625,-6414,0,0,0,0x0, bhvChuckya,31),
+OBJECT_WITH_ACTS(223,1875,1606,320,0,0,0,0x0, bhvChuckya,31),
+OBJECT_WITH_ACTS(207,1149,66,-5551,0,0,0,0x0, bhvFloorSwitchHiddenObjects,31),
+OBJECT_WITH_ACTS(215,-4163,-883,-3211,0,0,0,0x0, bhvRedCoin,31),
+OBJECT_WITH_ACTS(215,-1571,-892,-2207,0,0,0,0x0, bhvRedCoin,31),
+OBJECT_WITH_ACTS(215,-351,-837,-3918,0,0,0,0x0, bhvRedCoin,31),
+OBJECT_WITH_ACTS(215,-414,2875,991,0,0,0,0x0, bhvRedCoin,31),
+OBJECT_WITH_ACTS(215,-4381,2734,1512,0,0,0,0x0, bhvRedCoin,31),
+OBJECT_WITH_ACTS(215,-30,-770,4518,0,0,0,0x0, bhvRedCoin,31),
+OBJECT_WITH_ACTS(215,3707,1803,-2295,0,0,0,0x0, bhvRedCoin,31),
+OBJECT_WITH_ACTS(215,700,1803,947,0,0,0,0x0, bhvRedCoin,31),
+OBJECT_WITH_ACTS(124,826,76,-5772,0,53,0,0xa70000, bhvMessagePanel,31),
+OBJECT_WITH_ACTS(0,822,793,2916,0,0,0,0x0, bhvCoinFormation,31),
+OBJECT_WITH_ACTS(0,708,723,4516,0,0,0,0x0, bhvCoinFormation,31),
+OBJECT_WITH_ACTS(0,-2866,3241,-986,90,0,0,0x130000, bhvCoinFormation,31),
+OBJECT_WITH_ACTS(0,1678,2207,1653,90,0,0,0x130000, bhvCoinFormation,31),
+OBJECT_WITH_ACTS(0,-1555,289,-2971,90,0,0,0x130000, bhvCoinFormation,31),
+OBJECT_WITH_ACTS(0,1640,1850,1807,0,0,0,0x110000, bhvCoinFormation,31),
+OBJECT_WITH_ACTS(0,-656,2767,-3920,0,0,0,0x110000, bhvCoinFormation,31),
+OBJECT_WITH_ACTS(0,-6578,-141,1249,90,0,0,0x130000, bhvCoinFormation,31),
+OBJECT_WITH_ACTS(100,4513,1604,-2379,0,0,0,0x0, bhvPiranhaPlant,31),
+OBJECT_WITH_ACTS(0,4424,-1310,3685,90,0,0,0x130000, bhvCoinFormation,31),
+OBJECT_WITH_ACTS(100,3489,1604,1822,0,0,0,0x0, bhvPiranhaPlant,31),
+OBJECT_WITH_ACTS(100,4415,-787,1788,0,0,0,0x0, bhvPiranhaPlant,31),
+OBJECT_WITH_ACTS(100,2493,-787,-3821,0,0,0,0x0, bhvPiranhaPlant,31),
+OBJECT_WITH_ACTS(88,-2854,3484,-1504,0,180,0,0x0, bhvThwomp,31),
+OBJECT_WITH_ACTS(220,-247,-217,3483,0,0,0,0x0, bhvFlyGuy,31),
+OBJECT_WITH_ACTS(220,1270,-217,3437,0,0,0,0x0, bhvFlyGuy,31),
+OBJECT_WITH_ACTS(220,864,3253,-5606,0,0,0,0x0, bhvFlyGuy,31),
+RETURN()
+};
+const LevelScript local_warps_hmc_1_[] = {
+WARP_NODE(10,9,1,10,0),
+WARP_NODE(11,9,1,12,0),
+WARP_NODE(12,9,1,11,0),
+WARP_NODE(13,9,1,14,0),
+WARP_NODE(14,9,1,13,0),
+WARP_NODE(240,27,1,240,0),
+WARP_NODE(241,27,1,241,0),
+WARP_NODE(0,9,1,10,0),
+WARP_NODE(1,9,1,10,0),
+WARP_NODE(2,9,1,10,0),
+WARP_NODE(3,9,1,10,0),
+WARP_NODE(4,9,1,10,0),
+WARP_NODE(5,9,1,10,0),
+WARP_NODE(6,9,1,10,0),
+RETURN()
+};

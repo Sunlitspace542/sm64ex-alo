@@ -28,7 +28,7 @@ NON_MATCHING ?= 1
 COMPILER_N64 ?= gcc
 
 # Accept RM2C level folder output
-RM2C ?= 0
+RM2C ?= 1
 #add in text engine
 TE ?= 1
 #Debug stuff to make testing easier
